@@ -1,6 +1,7 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable camelcase */
 import db from '../db/dbconfig.js';
+import { geraHash } from '../../utils/senhas.js';
 
 class Usuario {
   constructor({
@@ -12,7 +13,7 @@ class Usuario {
   }) {
     this.id = null || id;
     this.nome = nome;
-    this.senhaHash = senha;
+    [this.senhaHash, this.salHash] = geraHash(senha);
     this.created_at = created_at || new Date().toISOString();
     this.updated_at = updated_at || new Date().toISOString();
   }
