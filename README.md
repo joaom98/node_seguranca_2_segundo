@@ -211,3 +211,11 @@ A API expõe os seguintes *endpoints* a partir da *base URL* `localhost:3000`:
 * Autenticação
 * Tratamento de erros
 * Validações
+
+
+
+## Redis
+
+```bash
+docker run --rm -p 6379:6379 --name alura-redis -d redis
+```
