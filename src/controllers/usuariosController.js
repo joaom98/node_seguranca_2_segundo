@@ -1,4 +1,5 @@
 import Usuario from '../models/usuario.js';
+import { validaSenha } from '../utils/senhas.js';
 
 class UsuariosController {
   static cadastrarUsuario = async (req, res) => {
@@ -24,6 +25,30 @@ class UsuariosController {
       return res.status(500).json(err.message);
     }
   };
+
+  static login = async (req, res) => {
+    try {
+      const { nome, senha } = req.body;
+      // TODO: validar nome e senha antes de seguir.
+
+      const usuario = await Usuario.pegarPeloNome(nome)
+      const loginValido = validaSenha(
+        senha,
+        usuario.senhaHash,
+        usuario.salHash);
+      
+      if (!loginValido) {
+        return res.status(422).json({ message: 'Credenciais inválidas'});
+      }
+
+      // TODO: gerar token de sessão.
+      
+
+      return res.status(200).json({ message: 'Usuario excluído' });
+    } catch (error) {
+      return res.status(500).json(err.message);
+    }
+  }
 }
 
 export default UsuariosController;

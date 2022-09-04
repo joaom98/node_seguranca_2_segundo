@@ -1,7 +1,7 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable camelcase */
 import db from '../db/dbconfig.js';
-import { geraHash } from '../../utils/senhas.js';
+import { geraHash } from '../utils/senhas.js';
 
 class Usuario {
   constructor({
