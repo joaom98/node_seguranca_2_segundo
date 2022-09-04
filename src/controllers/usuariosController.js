@@ -1,6 +1,7 @@
+import { randomBytes } from 'crypto';
 import Usuario from '../models/usuario.js';
 import { validaSenha } from '../utils/senhas.js';
-
+import { set as cacheSet } from '../utils/cache.js'
 class UsuariosController {
   static cadastrarUsuario = async (req, res) => {
     const { body } = req;
@@ -26,6 +27,10 @@ class UsuariosController {
     }
   };
 
+  static perfil = async (req, res) => {
+    res.status(200).json(req.loggedUser)
+  }
+
   static login = async (req, res) => {
     try {
       const { nome, senha } = req.body;
@@ -42,11 +47,24 @@ class UsuariosController {
       }
 
       // TODO: gerar token de sessão.
+      const token = randomBytes(64).toString("hex");
+      const sessionTime = parseInt((+new Date)/1000) + 86400 // 24h
       
+      await cacheSet(token, JSON.stringify({
+        ip: req.ip,
+        userId: usuario.id,
+        roles: ['USER']
+      }), sessionTime)
 
-      return res.status(200).json({ message: 'Usuario excluído' });
+      res.cookie('AuthToken', token, {
+        maxAge: sessionTime,
+        httpOnly: true,
+        sameSite: 'strict'
+      });
+
+      return res.sendStatus(200);
     } catch (error) {
-      return res.status(500).json(err.message);
+      return res.status(500).json(error.message);
     }
   }
 }
